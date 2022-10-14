@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SecureField: View {
+struct SecureInputView: View {
     
     @Binding private var text: String
     @State private var isSecured: Bool = true
@@ -26,13 +26,18 @@ struct SecureField: View {
                 } else {
                     TextField(title, text: $text)
                 }
-            }.padding(.trailing, 32)
+            }
+            .padding()
+            .frame(width: 325, height: 50)
+            .background(Color.black.opacity(0.05))
+            .cornerRadius(10)
 
             Button(action: {
                 isSecured.toggle()
             }) {
             Image(systemName: self.isSecured ? "eye.slash" : "eye")
                 .accentColor(.gray)
+                .padding(.horizontal, 10)
             }
         }
     }

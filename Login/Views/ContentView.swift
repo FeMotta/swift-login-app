@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
-import Firebase
 
 struct ContentView: View {
+    
+    @State var registerView = RegisterView()
     
     @State private var username = ""
     @State private var password = ""
     @State private var wrongUsername = 0
     @State private var wrongPassword = 0
     @State private var showingLoginScreen = false
+    @State private var hideBar = true
     
     
     var body: some View {
@@ -42,52 +44,38 @@ struct ContentView: View {
                         .cornerRadius(10)
                         .border(Color.red, width: CGFloat(wrongUsername))
                     
-                    SecureField("Senha", text: $password)
-                        .padding()
-                        .frame(width: 325, height: 50)
-                        .background(Color.black.opacity(0.05))
-                        .cornerRadius(10)
-                        .border(Color.red, width: CGFloat(wrongPassword))
+                    SecureInputView("Senha", text: $password)
                     
                     HStack {
                         Text("Já possui Registo?")
                             .foregroundColor(Color.black.opacity(0.80))
-                        Button("Logar") {
-                            
-                        }
+                        NavigationLink("Entrar", destination: LoginView())
+                            .gesture(TapGesture().onEnded {
+                                self.hideBar = false
+                            })
                     }
                     
                     Button("Registrar") {
-                        registerUser(username, password)
+                        registerView.registerUser(username, password)
                     }
                     .foregroundColor(.white)
                     .frame(width: 325, height: 50)
                     .background(Color.blue)
                     .cornerRadius(10)
-                    .padding(.top)
-                    
-                    NavigationLink(destination: Text("Você esta logado como @\(username)"), isActive: $showingLoginScreen) {
-                        EmptyView()
-                    }
+                    .padding(.top, 10)
                 }
             }
         }
-        .navigationBarHidden(true)
-    }
-    
-    func registerUser(_ username: String,_ password: String) {
-        Auth.auth().createUser(withEmail: username, password: password) { authResult, error in
-            if let e = error {
-                print(e.localizedDescription)
-            } else {
-                showingLoginScreen = true
-            }
+        .navigationBarHidden(hideBar)
+        .onAppear {
+            self.hideBar = true
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+            ContentView()
     }
 }
+
